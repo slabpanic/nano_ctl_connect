@@ -300,84 +300,79 @@ class MotionClient:
             wait_for_ready=wait_for_ready,
         )
 
-    def list_io_aliases(
+    def list_io_variables(
         self,
-        scope: str = "",
         *,
         card_no: int | None = None,
         timeout: float | None = None,
         metadata: Metadata | None = None,
         wait_for_ready: bool | None = None,
-    ) -> pb.IOAliasList:
-        """List saved variables; empty scope includes every project."""
-        request = pb.IOAliasesRequest(scope=scope)
+    ) -> pb.IOVariableList:
+        """List saved IO variables, optionally limited to a card."""
+        request = pb.IOVariablesRequest()
         if card_no is not None:
             request.card_no = card_no
-        return self._invoke(self._stub.ListIOAliases, request, timeout=timeout,
+        return self._invoke(self._stub.ListIOVariables, request, timeout=timeout,
                             metadata=metadata, wait_for_ready=wait_for_ready)
 
-    def put_io_alias(
+    def put_io_variable(
         self,
         card_no: int,
         kind: IOKind | int | str,
         address: int,
         alias: str,
         *,
-        scope: str = "system_hardware",
         remarks: str = "",
         reverse: bool = False,
         disabled: bool = False,
         timeout: float | None = None,
         metadata: Metadata | None = None,
         wait_for_ready: bool | None = None,
-    ) -> pb.IOAlias:
+    ) -> pb.IOVariable:
         """Save metadata only. This never changes a hardware output."""
-        request = pb.IOAlias(ref=self._io_alias_ref(card_no, kind, address, scope),
+        request = pb.IOVariable(ref=self._io_variable_ref(card_no, kind, address),
                              alias=alias, remarks=remarks, reverse=reverse, disabled=disabled)
-        return self._invoke(self._stub.PutIOAlias, request, timeout=timeout,
+        return self._invoke(self._stub.PutIOVariable, request, timeout=timeout,
                             metadata=metadata, wait_for_ready=wait_for_ready)
 
     @staticmethod
-    def _io_alias_ref(card_no: int, kind: IOKind | int | str, address: int, scope: str) -> pb.IOAliasRef:
-        return pb.IOAliasRef(scope=scope, card_no=card_no,
+    def _io_variable_ref(card_no: int, kind: IOKind | int | str, address: int) -> pb.IOVariableRef:
+        return pb.IOVariableRef(card_no=card_no,
                              kind=_enum_number(kind, IOKind, "IO_KIND"), address=address)
 
-    def delete_io_alias(
+    def delete_io_variable(
         self,
         card_no: int,
         kind: IOKind | int | str,
         address: int,
         *,
-        scope: str = "system_hardware",
         timeout: float | None = None,
         metadata: Metadata | None = None,
         wait_for_ready: bool | None = None,
     ) -> pb.Empty:
-        return self._invoke(self._stub.DeleteIOAlias, self._io_alias_ref(card_no, kind, address, scope),
+        return self._invoke(self._stub.DeleteIOVariable, self._io_variable_ref(card_no, kind, address),
                             timeout=timeout, metadata=metadata, wait_for_ready=wait_for_ready)
 
-    def read_io_alias(
+    def read_io_variable(
         self,
         card_no: int,
         kind: IOKind | int | str,
         address: int,
         *,
-        scope: str = "system_hardware",
         timeout: float | None = None,
         metadata: Metadata | None = None,
         wait_for_ready: bool | None = None,
-    ) -> pb.IOAliasValue:
+    ) -> pb.IOVariableValue:
         """Read physical data plus logical_on, applying the saved reverse flag."""
-        return self._invoke(self._stub.ReadIOAlias, self._io_alias_ref(card_no, kind, address, scope),
+        return self._invoke(self._stub.ReadIOVariable, self._io_variable_ref(card_no, kind, address),
                             timeout=timeout, metadata=metadata, wait_for_ready=wait_for_ready)
 
-    def write_io_alias(
+    def write_io_variable(
         self,
         card_no: int,
         kind: IOKind | int | str,
         address: int,
         *,
-        scope: str = "system_hardware",
         on: bool = False,
         raw_value: int = 0,
         reverse_time_millis: int = 0,
@@ -386,10 +381,10 @@ class MotionClient:
         wait_for_ready: bool | None = None,
     ) -> pb.CommandResult:
         """Write a logical output. Disabled variables and inputs are rejected."""
-        request = pb.IOAliasWriteRequest(ref=self._io_alias_ref(card_no, kind, address, scope),
+        request = pb.IOVariableWriteRequest(ref=self._io_variable_ref(card_no, kind, address),
                                          on=on, raw_value=raw_value,
                                          reverse_time_millis=reverse_time_millis)
-        return self._invoke(self._stub.WriteIOAlias, request, timeout=timeout,
+        return self._invoke(self._stub.WriteIOVariable, request, timeout=timeout,
                             metadata=metadata, wait_for_ready=wait_for_ready)
 
     def read_io_array(

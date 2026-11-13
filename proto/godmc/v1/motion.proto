@@ -14,11 +14,11 @@ service MotionService {
   rpc ReadIOArray(IOArrayReadRequest) returns (IOBatch);
   rpc WatchIO(IOReadRequest) returns (stream IOBatch);
   rpc WriteIO(IOWriteRequest) returns (CommandResult);
-  rpc ListIOAliases(IOAliasesRequest) returns (IOAliasList);
-  rpc PutIOAlias(IOAlias) returns (IOAlias);
-  rpc DeleteIOAlias(IOAliasRef) returns (Empty);
-  rpc ReadIOAlias(IOAliasRef) returns (IOAliasValue);
-  rpc WriteIOAlias(IOAliasWriteRequest) returns (CommandResult);
+  rpc ListIOVariables(IOVariablesRequest) returns (IOVariableList);
+  rpc PutIOVariable(IOVariable) returns (IOVariable);
+  rpc DeleteIOVariable(IOVariableRef) returns (Empty);
+  rpc ReadIOVariable(IOVariableRef) returns (IOVariableValue);
+  rpc WriteIOVariable(IOVariableWriteRequest) returns (CommandResult);
   rpc ReadBus(BusRef) returns (BusSnapshot);
   rpc BusCommand(BusCommandRequest) returns (CommandResult);
   rpc ReadObjectDictionary(ODRequest) returns (IntValue);
@@ -120,23 +120,22 @@ message IOWriteRequest {
   uint32 reverse_time_millis = 7;
 }
 
-// Scope defaults to system_hardware. Duplicate display names are allowed;
-// scope/card/kind/address together form the stable variable identity.
-message IOAliasRef { string scope = 1; uint32 card_no = 2; IOKind kind = 3; uint32 address = 4; }
-message IOAlias {
-  IOAliasRef ref = 1;
+// Alias is a display label; card/kind/address identify a variable.
+message IOVariableRef { uint32 card_no = 1; IOKind kind = 2; uint32 address = 3; }
+message IOVariable {
+  IOVariableRef ref = 1;
   string alias = 2;
   string remarks = 3;
   bool reverse = 4;
   bool disabled = 5;
   string source_id = 6;
 }
-message IOAliasesRequest { string scope = 1; optional uint32 card_no = 2; }
-message IOAliasList { repeated IOAlias aliases = 1; }
+message IOVariablesRequest { optional uint32 card_no = 1; }
+message IOVariableList { repeated IOVariable variables = 1; }
 // value contains physical data; logical_on applies the saved reverse flag.
-message IOAliasValue { IOValue value = 1; bool logical_on = 2; }
-message IOAliasWriteRequest {
-  IOAliasRef ref = 1;
+message IOVariableValue { IOValue value = 1; bool logical_on = 2; }
+message IOVariableWriteRequest {
+  IOVariableRef ref = 1;
   bool on = 2;
   uint32 raw_value = 3;
   uint32 reverse_time_millis = 4;

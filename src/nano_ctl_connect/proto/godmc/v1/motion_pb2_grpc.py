@@ -74,29 +74,29 @@ class MotionServiceStub:
                 request_serializer=godmc_dot_v1_dot_motion__pb2.IOWriteRequest.SerializeToString,
                 response_deserializer=godmc_dot_v1_dot_motion__pb2.CommandResult.FromString,
                 _registered_method=True)
-        self.ListIOAliases = channel.unary_unary(
-                '/godmc.v1.MotionService/ListIOAliases',
-                request_serializer=godmc_dot_v1_dot_motion__pb2.IOAliasesRequest.SerializeToString,
-                response_deserializer=godmc_dot_v1_dot_motion__pb2.IOAliasList.FromString,
+        self.ListIOVariables = channel.unary_unary(
+                '/godmc.v1.MotionService/ListIOVariables',
+                request_serializer=godmc_dot_v1_dot_motion__pb2.IOVariablesRequest.SerializeToString,
+                response_deserializer=godmc_dot_v1_dot_motion__pb2.IOVariableList.FromString,
                 _registered_method=True)
-        self.PutIOAlias = channel.unary_unary(
-                '/godmc.v1.MotionService/PutIOAlias',
-                request_serializer=godmc_dot_v1_dot_motion__pb2.IOAlias.SerializeToString,
-                response_deserializer=godmc_dot_v1_dot_motion__pb2.IOAlias.FromString,
+        self.PutIOVariable = channel.unary_unary(
+                '/godmc.v1.MotionService/PutIOVariable',
+                request_serializer=godmc_dot_v1_dot_motion__pb2.IOVariable.SerializeToString,
+                response_deserializer=godmc_dot_v1_dot_motion__pb2.IOVariable.FromString,
                 _registered_method=True)
-        self.DeleteIOAlias = channel.unary_unary(
-                '/godmc.v1.MotionService/DeleteIOAlias',
-                request_serializer=godmc_dot_v1_dot_motion__pb2.IOAliasRef.SerializeToString,
+        self.DeleteIOVariable = channel.unary_unary(
+                '/godmc.v1.MotionService/DeleteIOVariable',
+                request_serializer=godmc_dot_v1_dot_motion__pb2.IOVariableRef.SerializeToString,
                 response_deserializer=godmc_dot_v1_dot_motion__pb2.Empty.FromString,
                 _registered_method=True)
-        self.ReadIOAlias = channel.unary_unary(
-                '/godmc.v1.MotionService/ReadIOAlias',
-                request_serializer=godmc_dot_v1_dot_motion__pb2.IOAliasRef.SerializeToString,
-                response_deserializer=godmc_dot_v1_dot_motion__pb2.IOAliasValue.FromString,
+        self.ReadIOVariable = channel.unary_unary(
+                '/godmc.v1.MotionService/ReadIOVariable',
+                request_serializer=godmc_dot_v1_dot_motion__pb2.IOVariableRef.SerializeToString,
+                response_deserializer=godmc_dot_v1_dot_motion__pb2.IOVariableValue.FromString,
                 _registered_method=True)
-        self.WriteIOAlias = channel.unary_unary(
-                '/godmc.v1.MotionService/WriteIOAlias',
-                request_serializer=godmc_dot_v1_dot_motion__pb2.IOAliasWriteRequest.SerializeToString,
+        self.WriteIOVariable = channel.unary_unary(
+                '/godmc.v1.MotionService/WriteIOVariable',
+                request_serializer=godmc_dot_v1_dot_motion__pb2.IOVariableWriteRequest.SerializeToString,
                 response_deserializer=godmc_dot_v1_dot_motion__pb2.CommandResult.FromString,
                 _registered_method=True)
         self.ReadBus = channel.unary_unary(
@@ -208,31 +208,31 @@ class MotionServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListIOAliases(self, request, context):
+    def ListIOVariables(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def PutIOAlias(self, request, context):
+    def PutIOVariable(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def DeleteIOAlias(self, request, context):
+    def DeleteIOVariable(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ReadIOAlias(self, request, context):
+    def ReadIOVariable(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def WriteIOAlias(self, request, context):
+    def WriteIOVariable(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -347,29 +347,29 @@ def add_MotionServiceServicer_to_server(servicer, server):
                     request_deserializer=godmc_dot_v1_dot_motion__pb2.IOWriteRequest.FromString,
                     response_serializer=godmc_dot_v1_dot_motion__pb2.CommandResult.SerializeToString,
             ),
-            'ListIOAliases': grpc.unary_unary_rpc_method_handler(
-                    servicer.ListIOAliases,
-                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOAliasesRequest.FromString,
-                    response_serializer=godmc_dot_v1_dot_motion__pb2.IOAliasList.SerializeToString,
+            'ListIOVariables': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListIOVariables,
+                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOVariablesRequest.FromString,
+                    response_serializer=godmc_dot_v1_dot_motion__pb2.IOVariableList.SerializeToString,
             ),
-            'PutIOAlias': grpc.unary_unary_rpc_method_handler(
-                    servicer.PutIOAlias,
-                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOAlias.FromString,
-                    response_serializer=godmc_dot_v1_dot_motion__pb2.IOAlias.SerializeToString,
+            'PutIOVariable': grpc.unary_unary_rpc_method_handler(
+                    servicer.PutIOVariable,
+                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOVariable.FromString,
+                    response_serializer=godmc_dot_v1_dot_motion__pb2.IOVariable.SerializeToString,
             ),
-            'DeleteIOAlias': grpc.unary_unary_rpc_method_handler(
-                    servicer.DeleteIOAlias,
-                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOAliasRef.FromString,
+            'DeleteIOVariable': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteIOVariable,
+                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOVariableRef.FromString,
                     response_serializer=godmc_dot_v1_dot_motion__pb2.Empty.SerializeToString,
             ),
-            'ReadIOAlias': grpc.unary_unary_rpc_method_handler(
-                    servicer.ReadIOAlias,
-                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOAliasRef.FromString,
-                    response_serializer=godmc_dot_v1_dot_motion__pb2.IOAliasValue.SerializeToString,
+            'ReadIOVariable': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReadIOVariable,
+                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOVariableRef.FromString,
+                    response_serializer=godmc_dot_v1_dot_motion__pb2.IOVariableValue.SerializeToString,
             ),
-            'WriteIOAlias': grpc.unary_unary_rpc_method_handler(
-                    servicer.WriteIOAlias,
-                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOAliasWriteRequest.FromString,
+            'WriteIOVariable': grpc.unary_unary_rpc_method_handler(
+                    servicer.WriteIOVariable,
+                    request_deserializer=godmc_dot_v1_dot_motion__pb2.IOVariableWriteRequest.FromString,
                     response_serializer=godmc_dot_v1_dot_motion__pb2.CommandResult.SerializeToString,
             ),
             'ReadBus': grpc.unary_unary_rpc_method_handler(
@@ -655,7 +655,7 @@ class MotionService:
             _registered_method=True)
 
     @staticmethod
-    def ListIOAliases(request,
+    def ListIOVariables(request,
             target,
             options=(),
             channel_credentials=None,
@@ -668,9 +668,9 @@ class MotionService:
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/godmc.v1.MotionService/ListIOAliases',
-            godmc_dot_v1_dot_motion__pb2.IOAliasesRequest.SerializeToString,
-            godmc_dot_v1_dot_motion__pb2.IOAliasList.FromString,
+            '/godmc.v1.MotionService/ListIOVariables',
+            godmc_dot_v1_dot_motion__pb2.IOVariablesRequest.SerializeToString,
+            godmc_dot_v1_dot_motion__pb2.IOVariableList.FromString,
             options,
             channel_credentials,
             insecure,
@@ -682,7 +682,7 @@ class MotionService:
             _registered_method=True)
 
     @staticmethod
-    def PutIOAlias(request,
+    def PutIOVariable(request,
             target,
             options=(),
             channel_credentials=None,
@@ -695,9 +695,9 @@ class MotionService:
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/godmc.v1.MotionService/PutIOAlias',
-            godmc_dot_v1_dot_motion__pb2.IOAlias.SerializeToString,
-            godmc_dot_v1_dot_motion__pb2.IOAlias.FromString,
+            '/godmc.v1.MotionService/PutIOVariable',
+            godmc_dot_v1_dot_motion__pb2.IOVariable.SerializeToString,
+            godmc_dot_v1_dot_motion__pb2.IOVariable.FromString,
             options,
             channel_credentials,
             insecure,
@@ -709,7 +709,7 @@ class MotionService:
             _registered_method=True)
 
     @staticmethod
-    def DeleteIOAlias(request,
+    def DeleteIOVariable(request,
             target,
             options=(),
             channel_credentials=None,
@@ -722,8 +722,8 @@ class MotionService:
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/godmc.v1.MotionService/DeleteIOAlias',
-            godmc_dot_v1_dot_motion__pb2.IOAliasRef.SerializeToString,
+            '/godmc.v1.MotionService/DeleteIOVariable',
+            godmc_dot_v1_dot_motion__pb2.IOVariableRef.SerializeToString,
             godmc_dot_v1_dot_motion__pb2.Empty.FromString,
             options,
             channel_credentials,
@@ -736,7 +736,7 @@ class MotionService:
             _registered_method=True)
 
     @staticmethod
-    def ReadIOAlias(request,
+    def ReadIOVariable(request,
             target,
             options=(),
             channel_credentials=None,
@@ -749,9 +749,9 @@ class MotionService:
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/godmc.v1.MotionService/ReadIOAlias',
-            godmc_dot_v1_dot_motion__pb2.IOAliasRef.SerializeToString,
-            godmc_dot_v1_dot_motion__pb2.IOAliasValue.FromString,
+            '/godmc.v1.MotionService/ReadIOVariable',
+            godmc_dot_v1_dot_motion__pb2.IOVariableRef.SerializeToString,
+            godmc_dot_v1_dot_motion__pb2.IOVariableValue.FromString,
             options,
             channel_credentials,
             insecure,
@@ -763,7 +763,7 @@ class MotionService:
             _registered_method=True)
 
     @staticmethod
-    def WriteIOAlias(request,
+    def WriteIOVariable(request,
             target,
             options=(),
             channel_credentials=None,
@@ -776,8 +776,8 @@ class MotionService:
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/godmc.v1.MotionService/WriteIOAlias',
-            godmc_dot_v1_dot_motion__pb2.IOAliasWriteRequest.SerializeToString,
+            '/godmc.v1.MotionService/WriteIOVariable',
+            godmc_dot_v1_dot_motion__pb2.IOVariableWriteRequest.SerializeToString,
             godmc_dot_v1_dot_motion__pb2.CommandResult.FromString,
             options,
             channel_credentials,
