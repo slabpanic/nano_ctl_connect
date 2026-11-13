@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+package godmc.v1;
+
+option go_package = "nano_ctl/api/godmc/v1;godmcv1";
+
+service MotionService {
+  // Batch and streaming reads amortize RPC overhead for variable scanners.
+  rpc ReadAxis(AxisRef) returns (AxisSnapshot);
+  rpc ReadAxes(AxesRequest) returns (AxisBatch);
+  rpc WatchAxes(AxesRequest) returns (stream AxisBatch);
+  rpc AxisCommand(AxisCommandRequest) returns (CommandResult);
+  rpc ReadIO(IOReadRequest) returns (IOBatch);
+  rpc ReadIOArray(IOArrayReadRequest) returns (IOBatch);
+  rpc WatchIO(IOReadRequest) returns (stream IOBatch);
+  rpc WriteIO(IOWriteRequest) returns (CommandResult);
+  rpc ListIOAliases(IOAliasesRequest) returns (IOAliasList);
+  rpc PutIOAlias(IOAlias) returns (IOAlias);
+  rpc DeleteIOAlias(IOAliasRef) returns (Empty);
+  rpc ReadIOAlias(IOAliasRef) returns (IOAliasValue);
+  rpc WriteIOAlias(IOAliasWriteRequest) returns (CommandResult);
+  rpc ReadBus(BusRef) returns (BusSnapshot);
+  rpc BusCommand(BusCommandRequest) returns (CommandResult);
+  rpc ReadObjectDictionary(ODRequest) returns (IntValue);
+  rpc WriteObjectDictionary(ODWriteRequest) returns (CommandResult);
+  rpc ReadRxPDO(PDORequest) returns (IntValue);
+  rpc WriteRxPDO(PDOWriteRequest) returns (CommandResult);
+  rpc ReadTxPDO(PDORequest) returns (IntValue);
+  rpc HcmpCommand(HcmpCommandRequest) returns (CommandResult);
+  rpc ReadHcmp(HcmpRef) returns (HcmpSnapshot);
+  rpc ExtraEncoderCommand(ExtraEncoderCommandRequest) returns (CommandResult);
+  rpc ReadExtraEncoder(ExtraEncoderRef) returns (ExtraEncoderSnapshot);
+}
+
+message Empty {}
+message AxisRef { uint32 card_no = 1; uint32 axis = 2; uint32 fields_mask = 3; }
+message AxesRequest {
+  uint32 card_no = 1;
+  repeated uint32 axes = 2;
+  uint32 interval_micros = 3;
+  uint32 fields_mask = 4;
+}
+message AxisBatch { repeated AxisSnapshot axes = 1; int64 sampled_at_unix_nano = 2; }
+message AxisSnapshot {
+  AxisRef ref = 1;
+  double equivalence = 2;
+  double encoder_position = 3;
+  int32 target_position = 4;
+  double current_speed = 5;
+  bool done = 6;
+  uint32 io_status = 7;
+  int32 stop_reason = 8;
+  uint32 homing_status = 9;
+  uint32 state_machine = 10;
+  uint32 error_code = 11;
+  int32 torque = 12;
+  double offset_position = 13;
+  uint32 fields_read = 14;
+}
+
+enum AxisAction {
+  AXIS_ACTION_UNSPECIFIED = 0;
+  AXIS_ACTION_ENABLE = 1;
+  AXIS_ACTION_DISABLE = 2;
+  AXIS_ACTION_STOP = 3;
+  AXIS_ACTION_EMERGENCY_STOP = 4;
+  AXIS_ACTION_CLEAR_FAULT = 5;
+  AXIS_ACTION_CLEAR_STOP_REASON = 6;
+  AXIS_ACTION_ZERO_POSITION = 7;
+  AXIS_ACTION_JOG = 8;
+  AXIS_ACTION_MOVE = 9;
+  AXIS_ACTION_HOME = 10;
+  AXIS_ACTION_HOME_STOP = 11;
+  AXIS_ACTION_CHANGE_SPEED = 12;
+  AXIS_ACTION_CHANGE_TARGET = 13;
+  AXIS_ACTION_SET_EQUIVALENCE = 14;
+  AXIS_ACTION_SET_OFFSET = 15;
+}
+enum MotionUnit { MOTION_UNIT_POSITION = 0; MOTION_UNIT_ANGLE = 1; }
+message AxisCommandRequest {
+  AxisRef ref = 1;
+  AxisAction action = 2;
+  MotionUnit unit = 3;
+  double position = 4;
+  double speed = 5;
+  double acceleration = 6;
+  double deceleration = 7;
+  uint32 direction = 8;
+  uint32 position_mode = 9;
+  uint32 stop_mode = 10;
+  uint32 home_method = 11;
+  double secondary_speed = 12;
+  double offset = 13;
+  uint32 probe_function = 14;
+  double equivalence = 15;
+}
+message CommandResult { int32 sdk_code = 1; uint32 value = 2; }
+
+enum IOKind {
+  IO_KIND_UNSPECIFIED = 0;
+  IO_KIND_INPUT_BIT = 1;
+  IO_KIND_OUTPUT_BIT = 2;
+  IO_KIND_INPUT_PORT = 3;
+  IO_KIND_OUTPUT_PORT = 4;
+  IO_KIND_ANALOG_INPUT = 5;
+  IO_KIND_ANALOG_OUTPUT = 6;
+}
+message IOAddress { uint32 address = 1; }
+message IOReadRequest { uint32 card_no = 1; repeated uint32 addresses = 2; IOKind kind = 3; uint32 interval_micros = 4; }
+message IOArrayReadRequest { uint32 card_no = 1; uint32 port_num = 2; uint32 length = 3; bool outputs = 4; }
+message IOValue { uint32 address = 1; uint32 raw_value = 2; double analog_value = 3; bool on = 4; }
+message IOBatch { repeated IOValue values = 1; }
+message IOWriteRequest {
+  uint32 card_no = 1;
+  uint32 address = 2;
+  IOKind kind = 3;
+  uint32 raw_value = 4;
+  double analog_value = 5;
+  bool on = 6;
+  uint32 reverse_time_millis = 7;
+}
+
+// Scope defaults to system_hardware. Duplicate display names are allowed;
+// scope/card/kind/address together form the stable variable identity.
+message IOAliasRef { string scope = 1; uint32 card_no = 2; IOKind kind = 3; uint32 address = 4; }
+message IOAlias {
+  IOAliasRef ref = 1;
+  string alias = 2;
+  string remarks = 3;
+  bool reverse = 4;
+  bool disabled = 5;
+  string source_id = 6;
+}
+message IOAliasesRequest { string scope = 1; optional uint32 card_no = 2; }
+message IOAliasList { repeated IOAlias aliases = 1; }
+// value contains physical data; logical_on applies the saved reverse flag.
+message IOAliasValue { IOValue value = 1; bool logical_on = 2; }
+message IOAliasWriteRequest {
+  IOAliasRef ref = 1;
+  bool on = 2;
+  uint32 raw_value = 3;
+  uint32 reverse_time_millis = 4;
+}
+
+message BusRef { uint32 card_no = 1; uint32 port_num = 2; }
+enum BusAction { BUS_ACTION_UNSPECIFIED = 0; BUS_ACTION_STOP = 1; BUS_ACTION_CLEAR_ERROR = 2; }
+message BusCommandRequest { BusRef ref = 1; BusAction action = 2; }
+message BusSnapshot {
+  BusRef ref = 1;
+  uint32 axis_count = 2;
+  uint32 slave_count = 3;
+  uint32 input_count = 4;
+  uint32 output_count = 5;
+  uint32 error_code = 6;
+  uint32 cycle_time_micros = 7;
+  uint32 average_cycle_micros = 8;
+  uint32 max_cycle_micros = 9;
+  uint64 total_cycles = 10;
+  int32 cycle_time_sdk_code = 11;
+  int32 consume_sdk_code = 12;
+}
+message ODRequest { uint32 card_no = 1; uint32 port_num = 2; uint32 node = 3; uint32 index = 4; uint32 sub_index = 5; uint32 value_length = 6; }
+message ODWriteRequest { ODRequest ref = 1; int32 value = 2; }
+message PDORequest { uint32 card_no = 1; uint32 port_num = 2; uint32 address = 3; uint32 data_length = 4; }
+message PDOWriteRequest { PDORequest ref = 1; int32 value = 2; }
+message IntValue { int32 value = 1; }
+
+enum HcmpAction {
+  HCMP_ACTION_UNSPECIFIED = 0;
+  HCMP_ACTION_SET_CONFIG = 1;
+  HCMP_ACTION_SET_LINEAR = 2;
+  HCMP_ACTION_ADD_POINT = 3;
+  HCMP_ACTION_CLEAR_POINTS = 4;
+}
+message HcmpRef { uint32 card_no = 1; uint32 channel = 2; }
+message HcmpCommandRequest {
+  HcmpRef ref = 1;
+  HcmpAction action = 2;
+  uint32 mode = 3;
+  uint32 axis = 4;
+  uint32 source = 5;
+  uint32 logic = 6;
+  int32 time = 7;
+  int32 increment = 8;
+  int32 count = 9;
+  int32 position = 10;
+}
+message HcmpSnapshot {
+  HcmpRef ref = 1;
+  uint32 mode = 2;
+  uint32 axis = 3;
+  uint32 source = 4;
+  uint32 logic = 5;
+  int32 time = 6;
+  int32 increment = 7;
+  int32 count = 8;
+  int32 remaining_points = 9;
+  int32 current_point = 10;
+  int32 run_points = 11;
+}
+enum ExtraEncoderAction { EXTRA_ENCODER_ACTION_UNSPECIFIED = 0; EXTRA_ENCODER_ACTION_SET_MODE = 1; EXTRA_ENCODER_ACTION_SET_POSITION = 2; }
+message ExtraEncoderRef { uint32 card_no = 1; uint32 channel = 2; }
+message ExtraEncoderCommandRequest { ExtraEncoderRef ref = 1; ExtraEncoderAction action = 2; uint32 input_mode = 3; uint32 multiplier = 4; int32 position = 5; }
+message ExtraEncoderSnapshot { ExtraEncoderRef ref = 1; uint32 input_mode = 2; uint32 multiplier = 3; int32 position = 4; }
